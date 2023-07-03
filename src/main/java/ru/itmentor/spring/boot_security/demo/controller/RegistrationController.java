@@ -24,14 +24,13 @@ public class RegistrationController {
     }
 
     @PostMapping()
-    public String addUser(
-            ModelMap model,
-            @RequestParam("name") String name,
-            @RequestParam("lastname") String lastname,
-            @RequestParam("age") byte age,
-            @RequestParam("username") String username,
-            @RequestParam("password") String password,
-            @RequestParam("roles") Role[] roles) {
+    public String addUser(ModelMap model,
+                          @RequestParam("name") String name,
+                          @RequestParam("lastname") String lastname,
+                          @RequestParam("age") byte age,
+                          @RequestParam("username") String username,
+                          @RequestParam("password") String password,
+                          @RequestParam("roles") Role[] roles) {
 
         User userFromDb = userService.getUserByUsername(username);
 
