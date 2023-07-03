@@ -31,7 +31,10 @@ public class UserRepoImpl implements UserRepo {
 
     @Override
     public User getUserByUsername(String username) {
-        return null;
+        return em.createQuery("from User where username =: username",  User.class)
+                .setParameter("username", username)
+                .getResultList()
+                .stream().findFirst().orElse(null);
     }
 
     @Override
