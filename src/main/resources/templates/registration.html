@@ -21,17 +21,6 @@
     <br/>
     <label for="password">Password: </label>
     <input type="text" th:field="*{password}" id="password"/>
-    <br/>
-    <p>
-        <label>Roles:
-            <input type="checkbox" name="rolesName"
-                   th:each="role : ${roles}"
-                   th:text="${role}"
-                   th:value="${role}"
-                   th:field="*{roles}"
-            />
-        </label>
-    </p>
     <input type="submit" value="Add user"/>
     <br/>
     <label th:text="${message}"></label>

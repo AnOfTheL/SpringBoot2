@@ -7,10 +7,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
-import ru.itmentor.spring.boot_security.demo.service.UserService;
+import ru.itmentor.spring.boot_security.demo.service.ServiceApplication;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Controller
@@ -18,24 +19,24 @@ import java.util.Set;
 @PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
     @Autowired
-    private UserService userService;
+    private ServiceApplication<User> userService;
 
     @GetMapping()
     public String selectAll(ModelMap model) {
-        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("users", userService.getAll());
         return "show";
     }
 
     @GetMapping("/{id}")
     public String selectById(@PathVariable("id") long id, ModelMap model) {
-        model.addAttribute("user", userService.getUserById(id));
+        model.addAttribute("user", userService.getById(id).get());
         return "userCrud";
     }
 
     @GetMapping("/new")
     public String newUser(ModelMap model) {
         model.addAttribute("user", new User());
-        model.addAttribute("roles", Role.values());
+        //model.addAttribute("roles", Role.values());
         return "new";
     }
 
@@ -48,9 +49,9 @@ public class AdminController {
                          @RequestParam("password") String password,
                          @RequestParam("roles") Role[] roles)
     {
-        User userFromDb = userService.getUserByUsername(username);
+        Optional<User> userFromDb = userService.getByParam(username);
 
-        if (userFromDb != null) {
+        if (userFromDb.isPresent()) {
             model.addAttribute("message", "User exists!");
             return newUser(model);
         }
@@ -64,13 +65,13 @@ public class AdminController {
         Collections.addAll(sRoles, roles);
         user.setRoles(sRoles);
 
-        userService.saveUser(user);
+        userService.save(user);
         return "redirect:/admin";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(ModelMap model, @PathVariable("id") long id) {
-        model.addAttribute("user", userService.getUserById(id));
+        model.addAttribute("user", userService.getById(id).get());
         return "edit";
     }
 
@@ -79,13 +80,13 @@ public class AdminController {
                          @RequestParam("lastname") String lastname,
                          @RequestParam("age") byte age,
                          @PathVariable("id") long id) {
-        userService.updateUser(id, name, lastname, age);
+        userService.update(id, new User(name, lastname, age));
         return "redirect:/admin";
     }
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") int id) {
-        userService.deleteUserById(id);
+        userService.deleteById(id);
         return "redirect:/admin";
     }
 }

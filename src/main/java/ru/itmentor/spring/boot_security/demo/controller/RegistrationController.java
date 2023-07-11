@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
-import ru.itmentor.spring.boot_security.demo.service.UserService;
+import ru.itmentor.spring.boot_security.demo.service.implementation.RoleService;
+import ru.itmentor.spring.boot_security.demo.service.implementation.UserService;
 
 import java.util.*;
 
@@ -19,7 +19,6 @@ public class RegistrationController {
     @GetMapping()
     public String registration(ModelMap model) {
         model.addAttribute("user", new User());
-        model.addAttribute("roles", Role.values());
         return "registration";
     }
 
@@ -29,12 +28,12 @@ public class RegistrationController {
                           @RequestParam("lastname") String lastname,
                           @RequestParam("age") byte age,
                           @RequestParam("username") String username,
-                          @RequestParam("password") String password,
-                          @RequestParam("roles") Role[] roles) {
+                          @RequestParam("password") String password) {
 
-        User userFromDb = userService.getUserByUsername(username);
+        Optional<User> userFromDb = userService.getByParam(username);
+        //System.out.println(userFromDb.get().toString());
 
-        if (userFromDb != null) {
+        if (userFromDb.isPresent()) {
             model.addAttribute("message", "User exists!");
             return registration(model);
         }
@@ -44,11 +43,18 @@ public class RegistrationController {
         user.setPassword(password);
         user.setActive(true);
 
-        Set<Role> sRoles = new HashSet<>();
-        Collections.addAll(sRoles, roles);
-        user.setRoles(sRoles);
+        /*Optional<Role> roleFromDb = roleService.getByParam("USER");
+        //System.out.println(roleFromDb.get().toString());
 
-        userService.saveUser(user);
+        if (!roleFromDb.isEmpty()) {
+            //Set<Role> roleSet = new HashSet<>();
+            //roleSet.add(roleFromDb.get());
+            user.setRoles(Collections.singleton(roleFromDb.get()));
+        }
+
+        user.setRoles(Collections.singleton(new Role("USER")));*/
+
+        userService.save(user);
 
         return "redirect:/login";
     }

@@ -6,8 +6,6 @@
 </head>
 <body>
 <div th:text="${user.toString()}"></div>
-Roles:
-<div th:text="${#strings.setJoin(user.getRoles(), ',')}"></div>
 
 <form th:action="@{/logout}" method="POST">
   <input type="submit" value="Sign Out"/>

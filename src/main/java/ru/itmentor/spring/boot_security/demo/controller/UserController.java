@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import ru.itmentor.spring.boot_security.demo.model.User;
-import ru.itmentor.spring.boot_security.demo.service.UserService;
+import ru.itmentor.spring.boot_security.demo.service.ServiceApplication;
 
 import javax.sql.DataSource;
 
@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 @RequestMapping("/")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private ServiceApplication<User> userService;
 
     @Autowired
     DataSource dataSource;
@@ -28,7 +28,7 @@ public class UserController {
     @GetMapping("/user")
     public String selectUser(ModelMap model, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userService.getUserByUsername(userDetails.getUsername());
+        User user = userService.getByParam(userDetails.getUsername()).get();
         model.addAttribute("user", user);
         return "userRead";
     }
