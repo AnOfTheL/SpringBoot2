@@ -40,7 +40,6 @@ public class UserService implements ServiceApplication<User> {
     @Override
     @Transactional
     public void update(long id, User user) {
-        //addRoleByService(user, user.getRoles().stream().findFirst().get().getName());
         userDao.update(id, user);
     }
 

@@ -29,7 +29,7 @@ public class AdminController {
 
     @GetMapping("/{id}")
     public String selectById(@PathVariable("id") long id, ModelMap model) {
-        model.addAttribute("user", userService.getById(id).get());
+        model.addAttribute("user", userService.getById(id).orElseThrow(() -> new RuntimeException("User not found")));
         return "userCrud";
     }
 
@@ -69,7 +69,7 @@ public class AdminController {
     @GetMapping("/{id}/edit")
     public String edit(ModelMap model,
                        @PathVariable("id") long id) {
-        model.addAttribute("user", userService.getById(id).get());
+        model.addAttribute("user", userService.getById(id).orElseThrow(() -> new RuntimeException("User not found")));
         model.addAttribute("roles", roleService.getAll());
         return "edit";
     }
@@ -80,7 +80,7 @@ public class AdminController {
                          @RequestParam("age") byte age,
                          @RequestParam(value ="roles", required = false) Role[] roles,
                          @PathVariable("id") long id) {
-        User user = userService.getById(id).get();
+        User user = userService.getById(id).orElseThrow(() -> new RuntimeException("User not found"));
         user.setName(name);
         user.setLastname(lastname);
         user.setAge(age);
