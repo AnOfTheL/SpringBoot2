@@ -15,6 +15,10 @@ import java.util.*;
 public class RegistrationController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
+
+    private static final String USER = "USER";
 
     @GetMapping()
     public String registration(ModelMap model) {
@@ -31,29 +35,15 @@ public class RegistrationController {
                           @RequestParam("password") String password) {
 
         Optional<User> userFromDb = userService.getByParam(username);
-        //System.out.println(userFromDb.get().toString());
 
         if (userFromDb.isPresent()) {
             model.addAttribute("message", "User exists!");
             return registration(model);
         }
 
-        User user = new User(name, lastname, age);
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setActive(true);
+        User user = new User(name, lastname, age, username, password);
 
-        /*Optional<Role> roleFromDb = roleService.getByParam("USER");
-        //System.out.println(roleFromDb.get().toString());
-
-        if (!roleFromDb.isEmpty()) {
-            //Set<Role> roleSet = new HashSet<>();
-            //roleSet.add(roleFromDb.get());
-            user.setRoles(Collections.singleton(roleFromDb.get()));
-        }
-
-        user.setRoles(Collections.singleton(new Role("USER")));*/
-
+        userService.addRoleByService(user, roleService.getByParam(USER).get());
         userService.save(user);
 
         return "redirect:/login";

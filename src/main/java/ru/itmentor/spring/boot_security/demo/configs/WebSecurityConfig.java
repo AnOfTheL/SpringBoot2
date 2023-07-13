@@ -30,12 +30,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/", "/index", "/registration").permitAll()
                     .anyRequest().authenticated()
                 .and()
-                    .formLogin().successHandler(successUserHandler)
-                    .loginPage("/login")
-                    .permitAll()
+                    .formLogin()
+                .and()
+                    .httpBasic()
                 .and()
                     .logout()
-                    .permitAll();
+                    .logoutUrl("/logout")
+                    .clearAuthentication(true)
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessUrl("/?logout")
+                    //   .logoutSuccessHandler(urlLogoutSuccessHandler) // перехватчик если нужен
+                    .permitAll()
+                .and()
+                    .csrf().disable();
     }
 
     @Override

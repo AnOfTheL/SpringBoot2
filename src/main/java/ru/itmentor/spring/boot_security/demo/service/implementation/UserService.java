@@ -22,9 +22,6 @@ public class UserService implements ServiceApplication<User> {
     @Override
     @Transactional
     public void save(User user) {
-        Optional<Role> userRole = roleService.getByParam("USER");
-        user.addRole(userRole.get());
-
         userDao.save(user);
     }
 
@@ -43,6 +40,7 @@ public class UserService implements ServiceApplication<User> {
     @Override
     @Transactional
     public void update(long id, User user) {
+        //addRoleByService(user, user.getRoles().stream().findFirst().get().getName());
         userDao.update(id, user);
     }
 
@@ -56,5 +54,12 @@ public class UserService implements ServiceApplication<User> {
     @Transactional(readOnly = true)
     public Optional<User> getByParam(String username) {
         return userDao.getByParam(username);
+    }
+
+    public void addRoleByService(User user, Role role){
+        Optional<Role> roleFromDb = roleService.getByParam(role.getName());
+        if (roleFromDb.isPresent() && user.getRoles().stream().noneMatch(roleName->roleName==roleFromDb.get())) {
+            user.addRole(roleFromDb.get());
+        }
     }
 }

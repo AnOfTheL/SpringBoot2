@@ -9,6 +9,7 @@ import ru.itmentor.spring.boot_security.demo.service.ServiceApplication;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class RoleService implements ServiceApplication<Role> {
     @Autowired

@@ -16,6 +16,16 @@
   <label for="age">Enter age: </label>
   <input type="text" th:field="*{age}" id="age"/>
   <br/>
+  <p>
+    <label>Roles:
+      <input type="checkbox" name="rolesName"
+             th:each="role : ${roles}"
+             th:text="${role.getName()}"
+             th:value="${role.getName()}"
+             th:field="*{roles}"
+      />
+    </label>
+  </p>
   <input type="submit" value="Update"/>
 </form>
 
