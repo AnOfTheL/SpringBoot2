@@ -43,7 +43,7 @@ public class RegistrationController {
 
         User user = new User(name, lastname, age, username, password);
 
-        userService.addRoleByService(user, roleService.getByParam(USER).get());
+        userService.addRoleByService(user, roleService.getByParam(USER).orElseThrow(()->new RuntimeException("Role not found")));
         userService.save(user);
 
         return "redirect:/login";

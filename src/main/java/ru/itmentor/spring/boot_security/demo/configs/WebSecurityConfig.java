@@ -31,6 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated()
                 .and()
                     .formLogin()
+                    .successHandler(successUserHandler)
                 .and()
                     .httpBasic()
                 .and()
