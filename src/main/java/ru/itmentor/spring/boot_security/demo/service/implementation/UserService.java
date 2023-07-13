@@ -57,7 +57,7 @@ public class UserService implements ServiceApplication<User> {
 
     public void addRoleByService(User user, Role role){
         Optional<Role> roleFromDb = roleService.getByParam(role.getName());
-        if (roleFromDb.isPresent() && user.getRoles().stream().noneMatch(roleName->roleName==roleFromDb.get())) {
+        if (roleFromDb.isPresent() && user.getRoles().stream().noneMatch(roleName->roleName==roleFromDb.orElseThrow(() -> new RuntimeException("Role not found")))) {
             user.addRole(roleFromDb.get());
         }
     }
