@@ -23,8 +23,8 @@ public class UserController {
     DataSource dataSource;
 
     @GetMapping()
-    public String index(){
-        return "index";
+    public String redirectToLoginPage(){
+        return "redirect:/login";
     }
 
     @GetMapping("/user")
